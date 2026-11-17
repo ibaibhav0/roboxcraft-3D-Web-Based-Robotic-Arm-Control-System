@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoboXcraft — 3D Robotic Arm Control</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="app">
+        <!-- 3D Viewport -->
+        <div id="viewport">
+            <canvas id="viewport-canvas"></canvas>
+            <div id="viewport-overlay">
+                <span id="fps-counter">60 FPS</span>
+            </div>
+            <div id="estop-overlay" class="hidden">
+                <div class="estop-text">⚠ EMERGENCY STOP ACTIVE ⚠</div>
+                <div class="estop-sub">Press Reset to resume operations</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div id="control-panel">
+            <div class="panel-header">
+                <h1>🤖 RoboXcraft</h1>
+                <p class="subtitle">3D Robotic Arm Control System</p>
+            </div>
+
+            <!-- Joystick -->
+            <div class="panel-section">
+                <h3><span class="icon">🕹️</span> Joystick Control</h3>
+                <p class="hint">X: Base Rotation &nbsp;|&nbsp; Y: Shoulder</p>
+                <div id="joystick-container"></div>
+                <div class="joystick-readout">
+                    <span>X: <strong id="joy-x">0.00</strong></span>
+                    <span>Y: <strong id="joy-y">0.00</strong></span>
+                </div>
+            </div>
+
+            <!-- Joint Controls -->
+            <div class="panel-section">
+                <h3><span class="icon">⚙️</span> Joint Controls</h3>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Base Rotation</span>
+                        <span class="angle-val" id="base-val">0.0°</span>
+                    </div>
+                    <input type="range" id="joint-base" class="joint-slider" min="-180" max="180" value="0" step="0.1">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Shoulder</span>
+                        <span class="angle-val" id="shoulder-val">30.0°</span>
+                    </div>
+                    <input type="range" id="joint-shoulder" class="joint-slider" min="-90" max="90" value="30" step="0.1">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Elbow</span>
+                        <span class="angle-val" id="elbow-val">-60.0°</span>
+                    </div>
+                    <input type="range" id="joint-elbow" class="joint-slider" min="-135" max="135" value="-60" step="0.1">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Wrist</span>
+                        <span class="angle-val" id="wrist-val">0.0°</span>
+                    </div>
+                    <input type="range" id="joint-wrist" class="joint-slider" min="-90" max="90" value="0" step="0.1">
+                </div>
+
+                <button id="reset-joints" class="btn btn-secondary">↺ Reset All Joints</button>
+            </div>
+
+            <!-- Speed Control -->
+            <div class="panel-section">
+                <h3><span class="icon">⚡</span> Speed Control</h3>
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Movement Speed</span>
+                        <span class="angle-val" id="speed-val">50%</span>
+                    </div>
+                    <input type="range" id="speed-slider" class="speed-slider" min="1" max="100" value="50" step="1">
+                </div>
+            </div>
+
+            <!-- Gripper Control -->
+            <div class="panel-section">
+                <h3><span class="icon">✋</span> Gripper Control</h3>
+                <div class="gripper-buttons">
+                    <button id="gripper-open" class="btn btn-gripper btn-open">▽ Open</button>
+                    <button id="gripper-close" class="btn btn-gripper btn-close">△ Close</button>
+                </div>
+                <div class="gripper-indicator">
+                    <div class="gripper-bar">
+                        <div class="gripper-fill" id="gripper-fill"></div>
+                    </div>
+                    <span id="gripper-percent">100%</span>
+                </div>
+            </div>
+
+            <!-- Emergency Stop -->
+            <div class="panel-section estop-section">
+                <button id="emergency-stop" class="btn btn-estop">
+                    ⬣ EMERGENCY STOP
+                </button>
+            </div>
+
+            <!-- Live Status -->
+            <div class="panel-section">
+                <h3><span class="icon">📊</span> Live Status</h3>
+                <div class="status-grid">
+                    <div class="status-row">
+                        <span class="status-dot online" id="sys-dot"></span>
+                        <span class="status-label">System</span>
+                        <span class="status-value" id="sys-status">Online</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-dot idle" id="move-dot"></span>
+                        <span class="status-label">Movement</span>
+                        <span class="status-value" id="move-status">Idle</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-dot open" id="grip-dot"></span>
+                        <span class="status-label">Gripper</span>
+                        <span class="status-value" id="grip-status">Open</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-dot speed" id="speed-dot"></span>
+                        <span class="status-label">Speed</span>
+                        <span class="status-value" id="speed-status">50%</span>
+                    </div>
+                </div>
+                <div class="joint-status-table">
+                    <div class="jst-header">Joint Angles</div>
+                    <div class="jst-row"><span>Base</span><span id="jst-base">0.0°</span></div>
+                    <div class="jst-row"><span>Shoulder</span><span id="jst-shoulder">30.0°</span></div>
+                    <div class="jst-row"><span>Elbow</span><span id="jst-elbow">-60.0°</span></div>
+                    <div class="jst-row"><span>Wrist</span><span id="jst-wrist">0.0°</span></div>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <p>Orbit: Left-Click &nbsp;|&nbsp; Zoom: Scroll &nbsp;|&nbsp; Pan: Right-Click</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
