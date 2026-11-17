@@ -2,13 +2,15 @@
 
 A fully interactive 3D robotic arm simulation and control system that runs entirely in the web browser. Built with **Three.js** for real-time 3D rendering and vanilla JavaScript for a responsive, modern control interface.
 
-![RoboXcraft Full View](screenshots/01-full-view.png)
-
 ---
 
-## 🌐 Live Demo
+## 🌐 Live Working Website & Repository
 
-Open `index.html` through any HTTP server (e.g., `python -m http.server 8080`) and visit **http://localhost:8080**.
+- **Live Deployed Website**: [https://ibaibhav0.github.io/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System/](https://ibaibhav0.github.io/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System/)
+- **GitHub Repository**: [https://github.com/ibaibhav0/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System](https://github.com/ibaibhav0/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System)
+- **Local Application URL**: `http://localhost:8080`
+
+![RoboXcraft Full View](screenshots/01-full-view.png)
 
 ---
 
