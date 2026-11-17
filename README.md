@@ -4,9 +4,10 @@ A fully interactive 3D robotic arm simulation and control system that runs entir
 
 ---
 
-## 🌐 Live Working Website & Repository
+## 🌐 Live Deployed Websites & Repository
 
-- **Live Deployed Website**: [https://ibaibhav0.github.io/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System/](https://ibaibhav0.github.io/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System/)
+- **Vercel Production Link**: [https://roboxcraft.vercel.app](https://roboxcraft.vercel.app)
+- **GitHub Pages Link**: [https://ibaibhav0.github.io/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System/](https://ibaibhav0.github.io/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System/)
 - **GitHub Repository**: [https://github.com/ibaibhav0/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System](https://github.com/ibaibhav0/roboxcraft-3D-Web-Based-Robotic-Arm-Control-System)
 - **Local Application URL**: `http://localhost:8080`
 
